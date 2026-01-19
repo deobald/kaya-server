@@ -1,0 +1,11 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  user: one
+  provider: google
+  uid: user-one-uid
+
+two:
+  user: two
+  provider: google
+  uid: user-two-uid

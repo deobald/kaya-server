@@ -6,9 +6,10 @@
 
 ## API Routes
 
-* /:username/angas - POST to create
-* /:username/angas - GET to list
-* /:username/search - GET to query for an anga
+* /:user_email/angas  - POST to sync individual angas
+* /:user_email/angas  - GET to list all angas by filename 
+* /:user_email/sync   - POST any angas to synchronize in bulk
+* /:user_email/search - GET to query for an anga
 
 ## Questions
 

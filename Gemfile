@@ -18,7 +18,14 @@ gem "stimulus-rails"
 gem "jbuilder"
 
 # Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
-# gem "bcrypt", "~> 3.1.7"
+gem "bcrypt", "~> 3.1.7"
+
+# OAuth Authentication
+gem "omniauth"
+gem "omniauth-google-oauth2"
+gem "omniauth-apple"
+gem "omniauth-microsoft_graph"
+gem "omniauth-rails_csrf_protection"
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem "tzinfo-data", platforms: %i[ windows jruby ]
@@ -63,4 +70,7 @@ group :test do
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
   gem "capybara"
   gem "selenium-webdriver"
+
+  # Pin minitest to 5.x until Rails is compatible with minitest 6.x
+  gem "minitest", "~> 5.0"
 end
