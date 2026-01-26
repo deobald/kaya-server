@@ -7,6 +7,7 @@ Rails.application.routes.draw do
   # Account management
   resource :account, only: [ :show, :update ] do
     delete "identities/:identity_id", to: "accounts#destroy_identity", as: :identity
+    patch "avatar", to: "accounts#update_avatar"
   end
 
   # OmniAuth routes - support both GET and POST callbacks

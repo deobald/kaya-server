@@ -1,11 +1,46 @@
-<div class="account-page">
+<div class="account-page" data-controller="avatar-cropper">
   <div class="account-container">
     <div class="account-header">
-      <div class="profile-avatar profile-avatar-large">
-        <%= Current.user.email_address[0].upcase %>
-      </div>
+      <button type="button" class="avatar-upload-button" data-action="avatar-cropper#openFilePicker" title="Change avatar">
+        <% if @user.avatar.attached? %>
+          <%= image_tag @user.avatar, class: "profile-avatar profile-avatar-large profile-avatar-image" %>
+        <% else %>
+          <div class="profile-avatar profile-avatar-large">
+            <%= @user.email_address[0].upcase %>
+          </div>
+        <% end %>
+        <div class="avatar-upload-overlay">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+            <path d="M12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6zm0 8a5 5 0 1 1 0-10 5 5 0 0 1 0 10zm6.5-12H18l-1.5-2h-9L6 5H5.5A2.5 2.5 0 0 0 3 7.5v9A2.5 2.5 0 0 0 5.5 19h13a2.5 2.5 0 0 0 2.5-2.5v-9A2.5 2.5 0 0 0 18.5 5z"/>
+          </svg>
+        </div>
+      </button>
+      <input type="file" accept="image/*" class="visually-hidden" data-avatar-cropper-target="input" data-action="change->avatar-cropper#fileSelected">
       <h1 class="title-2">Account</h1>
       <p class="account-email"><%= Current.user.email_address %></p>
+    </div>
+
+    <!-- Avatar Cropper Modal -->
+    <div class="avatar-modal" data-avatar-cropper-target="modal">
+      <div class="avatar-modal-content">
+        <div class="avatar-modal-header">
+          <h2 class="title-4">Crop Avatar</h2>
+          <button type="button" class="avatar-modal-close" data-action="avatar-cropper#cancel">&times;</button>
+        </div>
+        <div class="avatar-modal-body">
+          <div class="avatar-cropper-container">
+            <img data-avatar-cropper-target="image" class="avatar-cropper-image">
+          </div>
+          <div class="avatar-preview-container">
+            <p class="caption">Preview</p>
+            <img data-avatar-cropper-target="preview" class="avatar-preview-image">
+          </div>
+        </div>
+        <div class="avatar-modal-footer">
+          <button type="button" class="btn btn-secondary" data-action="avatar-cropper#cancel">Cancel</button>
+          <button type="button" class="btn btn-primary" data-action="avatar-cropper#save">Save Avatar</button>
+        </div>
+      </div>
     </div>
 
     <section class="account-section">

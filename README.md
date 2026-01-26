@@ -6,6 +6,7 @@
 
 ## TODO
 
+* [x] avatar
 * [ ] sync API
 * [ ] email address verification
 * [ ] save a note/bookmark

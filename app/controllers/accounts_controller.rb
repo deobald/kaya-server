@@ -23,6 +23,21 @@ class AccountsController < ApplicationController
     end
   end
 
+  def update_avatar
+    if params[:avatar].blank?
+      render json: { error: "No image provided" }, status: :unprocessable_entity
+      return
+    end
+
+    @user.avatar.attach(params[:avatar])
+
+    if @user.avatar.attached?
+      render json: { success: true }
+    else
+      render json: { error: "Failed to upload avatar" }, status: :unprocessable_entity
+    end
+  end
+
   private
 
   def set_user
