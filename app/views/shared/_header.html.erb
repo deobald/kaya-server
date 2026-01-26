@@ -9,8 +9,12 @@
 
     <nav class="nav-links">
       <% if authenticated? %>
-        <span class="nav-greeting">Hello, <%= Current.user.email_address.split('@').first %></span>
         <%= button_to "Log Out", session_path, method: :delete, class: "btn btn-secondary" %>
+        <%= link_to account_path, class: "profile-link", title: "Account" do %>
+          <div class="profile-avatar">
+            <%= Current.user.email_address[0].upcase %>
+          </div>
+        <% end %>
       <% else %>
         <%= link_to "Log In", new_session_path, class: "btn btn-secondary" %>
         <%= link_to "Sign Up", new_registration_path, class: "btn btn-primary" %>

@@ -4,6 +4,11 @@ Rails.application.routes.draw do
   resource :registration, only: [ :new, :create ]
   resources :passwords, param: :token
 
+  # Account management
+  resource :account, only: [ :show, :update ] do
+    delete "identities/:identity_id", to: "accounts#destroy_identity", as: :identity
+  end
+
   # OmniAuth routes - support both GET and POST callbacks
   # (Google uses GET, some providers use POST)
   get "/auth/:provider/callback", to: "omniauth_callbacks#create"

@@ -1,0 +1,89 @@
+<div class="account-page">
+  <div class="account-container">
+    <div class="account-header">
+      <div class="profile-avatar profile-avatar-large">
+        <%= Current.user.email_address[0].upcase %>
+      </div>
+      <h1 class="title-2">Account</h1>
+      <p class="account-email"><%= Current.user.email_address %></p>
+    </div>
+
+    <section class="account-section">
+      <h2 class="title-4">Email Address</h2>
+      <%= form_with url: account_path, method: :patch, class: "account-form" do |f| %>
+        <div class="form-group">
+          <label for="email_address">Email</label>
+          <%= f.email_field :email_address, value: @user.email_address, class: "form-input", required: true %>
+        </div>
+        <div class="form-actions">
+          <%= f.submit "Update Email", class: "btn btn-primary" %>
+        </div>
+      <% end %>
+    </section>
+
+    <section class="account-section">
+      <h2 class="title-4">Change Password</h2>
+      <%= form_with url: account_path, method: :patch, class: "account-form" do |f| %>
+        <div class="form-group">
+          <label for="current_password">Current Password</label>
+          <%= f.password_field :current_password, class: "form-input", autocomplete: "current-password" %>
+        </div>
+        <div class="form-group">
+          <label for="password">New Password</label>
+          <%= f.password_field :password, class: "form-input", autocomplete: "new-password" %>
+          <span class="form-hint">Minimum 8 characters</span>
+        </div>
+        <div class="form-group">
+          <label for="password_confirmation">Confirm New Password</label>
+          <%= f.password_field :password_confirmation, class: "form-input", autocomplete: "new-password" %>
+        </div>
+        <div class="form-actions">
+          <%= f.submit "Update Password", class: "btn btn-primary" %>
+        </div>
+      <% end %>
+    </section>
+
+    <section class="account-section">
+      <h2 class="title-4">Connected Accounts</h2>
+      <p class="section-description">Manage your connected login methods.</p>
+
+      <div class="connected-accounts">
+        <% if @user.identities.any? %>
+          <% @user.identities.each do |identity| %>
+            <div class="connected-account">
+              <div class="connected-account-info">
+                <span class="provider-icon"><%= provider_icon(identity.provider) %></span>
+                <span class="provider-name"><%= provider_name(identity.provider) %></span>
+              </div>
+              <% if @user.identities.count > 1 || @user.password_digest.present? %>
+                <%= button_to "Disconnect", identity_account_path(identity_id: identity.id), method: :delete, class: "btn btn-secondary btn-small", data: { turbo_confirm: "Are you sure you want to disconnect #{provider_name(identity.provider)}?" } %>
+              <% else %>
+                <span class="form-hint">Set a password to disconnect</span>
+              <% end %>
+            </div>
+          <% end %>
+        <% else %>
+          <p class="no-accounts">No connected accounts. You can connect accounts when signing in.</p>
+        <% end %>
+      </div>
+
+      <div class="oauth-connect-buttons">
+        <p class="section-description">Connect additional accounts:</p>
+        <div class="oauth-buttons-row">
+          <% unless @user.identities.exists?(provider: "google_oauth2") %>
+            <%= button_to "/auth/google_oauth2", method: :post, data: { turbo: false }, class: "btn btn-oauth btn-small" do %>
+              <%= render "shared/google_icon" %>
+              <span>Google</span>
+            <% end %>
+          <% end %>
+          <% unless @user.identities.exists?(provider: "microsoft_graph") %>
+            <%= button_to "/auth/microsoft_graph", method: :post, data: { turbo: false }, class: "btn btn-oauth btn-small" do %>
+              <%= render "shared/microsoft_icon" %>
+              <span>Microsoft</span>
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
