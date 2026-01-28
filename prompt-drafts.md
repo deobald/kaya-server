@@ -14,4 +14,6 @@ The search should not match heavily-reused words, such as "note" or "bookmark" f
 
 At a medium typing speed, the search box focus seems to "jump" into the middle of the existing text. I believe this is happening because of the search box being refocused. While typing the word "Notwithstanding", the cursor jumped multiple times within the textbox to produce "nwithtandingsot"
 
+Why does the textbox lose focus on search at all? Since this is incremental search, it should happen in the background as the user types. Instead of attempting to retain cursor position OR default to refocusing at the end of the search box, is it possible to avoid the search box losing focus at all so the user can just type naturally?
+
 ## Preview

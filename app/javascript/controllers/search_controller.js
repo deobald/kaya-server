@@ -3,33 +3,28 @@ import { Controller } from "@hotwired/stimulus";
 export default class extends Controller {
   static targets = ["input"];
 
-  connect() {
-    this.boundRefocusInput = this.refocusInput.bind(this);
-    document.addEventListener("turbo:frame-load", this.boundRefocusInput);
-  }
-
-  disconnect() {
-    document.removeEventListener("turbo:frame-load", this.boundRefocusInput);
-  }
-
   search() {
     clearTimeout(this.timeout);
     this.timeout = setTimeout(() => {
-      this.element.requestSubmit();
+      // Use Turbo's fetch to update the frame without affecting focus
+      const frame = document.getElementById("anga-results");
+      if (frame) {
+        const url = new URL(this.element.action);
+        url.searchParams.set("q", this.inputTarget.value);
+        frame.src = url.toString();
+      }
     }, 300);
   }
 
-  submitAndRefocus(event) {
+  submit(event) {
+    // Prevent default form submission on Enter, just trigger the search
     event.preventDefault();
-    this.element.requestSubmit();
-  }
-
-  refocusInput() {
-    if (this.hasInputTarget) {
-      // Always place cursor at the end of the input
-      this.inputTarget.focus();
-      const len = this.inputTarget.value.length;
-      this.inputTarget.setSelectionRange(len, len);
+    clearTimeout(this.timeout);
+    const frame = document.getElementById("anga-results");
+    if (frame) {
+      const url = new URL(this.element.action);
+      url.searchParams.set("q", this.inputTarget.value);
+      frame.src = url.toString();
     }
   }
 }
