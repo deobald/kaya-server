@@ -1,6 +1,6 @@
 <header class="site-header">
   <div class="header-container">
-    <div class="logo">
+    <div class="header-left">
       <div class="hamburger-menu" data-controller="hamburger">
         <button class="hamburger-button" data-action="click->hamburger#toggle" aria-label="Menu">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -21,6 +21,9 @@
           <% end %>
         </nav>
       </div>
+      <button class="add-button" data-action="click->add-modal#open" aria-label="Add note or bookmark">
+        <%= render "shared/icons/plus_icon" %>
+      </button>
     </div>
 
     <nav class="nav-links">

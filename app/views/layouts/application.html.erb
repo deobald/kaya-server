@@ -40,9 +40,12 @@
       <%= render "shared/flash" %>
       <%= yield %>
     <% elsif content_for?(:app_layout) %>
-      <%= render "shared/app_header" %>
-      <%= render "shared/flash" %>
-      <%= yield %>
+      <div data-controller="add-modal">
+        <%= render "shared/app_header" %>
+        <%= render "shared/flash" %>
+        <%= yield %>
+        <%= render "shared/add_modal" %>
+      </div>
     <% else %>
       <%= render "shared/header" %>
       <%= render "shared/flash" %>

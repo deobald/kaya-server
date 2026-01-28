@@ -1957,3 +1957,255 @@ img {
         height: 50vh;
     }
 }
+
+/* ============================================
+   Header Left (Hamburger + Add Button)
+   ============================================ */
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-1);
+}
+
+.add-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: none;
+    border: none;
+    border-radius: var(--radius-medium);
+    cursor: pointer;
+    color: var(--color-text);
+    transition: background-color var(--transition-fast);
+}
+
+.add-button:hover {
+    background-color: var(--color-surface-alt);
+}
+
+.add-button:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+}
+
+/* ============================================
+   Add Modal (GNOME HIG Dialog Style)
+   ============================================ */
+.add-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-4);
+    background: rgba(0, 0, 0, 0.6);
+}
+
+.add-modal.active {
+    display: flex;
+}
+
+.add-modal-dialog {
+    background: var(--color-surface);
+    border-radius: var(--radius-xlarge);
+    border: 1px solid var(--color-border);
+    box-shadow: var(--shadow-large);
+    width: 100%;
+    max-width: 500px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.add-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--spacing-2) var(--spacing-3);
+    border-bottom: 1px solid var(--color-border);
+    background: var(--color-surface-alt);
+}
+
+.add-modal-title {
+    font-size: var(--font-size-body);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text);
+    margin: 0;
+}
+
+.add-modal-close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    background: none;
+    border: none;
+    border-radius: var(--radius-medium);
+    color: var(--color-text-muted);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.add-modal-close:hover {
+    background: var(--color-border);
+    color: var(--color-text);
+}
+
+.add-modal-close:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+}
+
+.add-modal-content {
+    padding: var(--spacing-4);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-3);
+}
+
+/* Dropzone */
+.add-modal-dropzone {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-2);
+    padding: var(--spacing-3);
+    border: 2px dashed var(--color-border);
+    border-radius: var(--radius-large);
+    background: var(--color-background-alt);
+    transition: all var(--transition-fast);
+}
+
+.add-modal-dropzone.drag-over {
+    border-color: var(--color-primary);
+    background: var(--color-primary-lighter);
+}
+
+:root[data-theme="dark"] .add-modal-dropzone.drag-over {
+    background: rgba(98, 160, 234, 0.15);
+}
+
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .add-modal-dropzone.drag-over {
+        background: rgba(98, 160, 234, 0.15);
+    }
+}
+
+.add-input {
+    width: 100%;
+    padding: var(--spacing-2);
+    font-family: var(--font-family);
+    font-size: var(--font-size-body);
+    color: var(--color-text);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-medium);
+    resize: vertical;
+    min-height: 100px;
+    transition:
+        border-color var(--transition-fast),
+        box-shadow var(--transition-fast);
+}
+
+.add-input:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: var(--focus-ring);
+}
+
+.add-input::placeholder {
+    color: var(--color-text-muted);
+}
+
+.add-dropzone-hint {
+    text-align: center;
+    color: var(--color-text-muted);
+    font-size: var(--font-size-body);
+}
+
+/* Modal Footer */
+.add-modal-footer {
+    display: flex;
+    justify-content: flex-end;
+}
+
+/* Pill Button (GNOME style) */
+.btn-pill {
+    border-radius: var(--radius-full);
+    padding: var(--spacing-1) var(--spacing-4);
+    font-weight: var(--font-weight-semibold);
+}
+
+/* Status Messages */
+.add-modal-status {
+    padding: var(--spacing-2);
+    border-radius: var(--radius-medium);
+    font-size: var(--font-size-body);
+    text-align: center;
+}
+
+.add-modal-status-info {
+    background: var(--color-primary-lighter);
+    color: var(--color-primary-hover);
+}
+
+.add-modal-status-success {
+    background: #8ff0a4;
+    color: #26a269;
+}
+
+.add-modal-status-error {
+    background: #f66151;
+    color: #a51d2d;
+}
+
+:root[data-theme="dark"] .add-modal-status-info {
+    background: rgba(98, 160, 234, 0.2);
+    color: var(--color-primary-light);
+}
+
+:root[data-theme="dark"] .add-modal-status-success {
+    background: rgba(51, 209, 122, 0.2);
+    color: #8ff0a4;
+}
+
+:root[data-theme="dark"] .add-modal-status-error {
+    background: rgba(224, 27, 36, 0.2);
+    color: #f66151;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .add-modal-status-info {
+        background: rgba(98, 160, 234, 0.2);
+        color: var(--color-primary-light);
+    }
+
+    :root:not([data-theme="light"]) .add-modal-status-success {
+        background: rgba(51, 209, 122, 0.2);
+        color: #8ff0a4;
+    }
+
+    :root:not([data-theme="light"]) .add-modal-status-error {
+        background: rgba(224, 27, 36, 0.2);
+        color: #f66151;
+    }
+}
+
+/* Add Modal Responsive */
+@media (max-width: 480px) {
+    .add-modal {
+        padding: var(--spacing-2);
+    }
+
+    .add-modal-dialog {
+        max-width: 100%;
+    }
+
+    .add-modal-content {
+        padding: var(--spacing-3);
+    }
+}
