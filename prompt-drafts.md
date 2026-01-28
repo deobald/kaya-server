@@ -35,3 +35,11 @@ To the immediate right of the hamburger menu in the header, add a plus icon (use
 **Drag & Drop**: The entire "Add" modal should also accept drag and drop events. If text is dropped, it should record a note/bookmark, according to instructions above, named with a `-note.md` or `-bookmark.url` suffix, respectively. If a file is dropped, `.md` files should be recorded as Notes. `.url` files should be recorded as Bookmarks. All other files should be recorded
 
 **Filename Format**: The filename of dropped files should always be preserved, even for Notes and Bookmarks. All files/anga should have their filename prefixed with a datetimestamp according to the "Core Concept" as described in AGENTS.md
+
+## Cached Webpages
+
+When the user adds a URL with the "Add" modal, Kaya should use the `http.rb` gem to download the webpage. Create a model named `Bookmark` which will have attached ActiveStorage files for the HTML, JavaScript, CSS, and images required to re-render the webpage in the "Preview" modal window.
+
+Add a `/api/v1/cache/` route which will list all cached `.url` (bookmark) angas, as directories (as 'text/plain', similar to AngaController#index). The cache index is used so Kaya clients can synchronize/diff with the Kaya Server. Add a `/api/v1/cache/:bookmark` route which returns the index of the directory which lists all the HTML, JavaScript, CSS, images, etc. required to re-render the webpage that was cached when the bookmark was saved. The names of cache directories (and, therefore, `:bookmark` in the route) should be identical to the filename of the anga: `2026-01-27T120000-bookmark.url` or similar.
+
+Modify the "Preview" modal such that it renders the cached webpage for bookmark angas (`.url`) in an iframe, similar to how PDFs are rendered.
