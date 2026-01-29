@@ -3,6 +3,7 @@ class Anga < ApplicationRecord
 
   belongs_to :user
   has_one_attached :file
+  has_one :bookmark, dependent: :destroy
 
   validates :filename, presence: true
   validates :filename, uniqueness: { scope: :user_id }

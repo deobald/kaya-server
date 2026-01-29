@@ -86,7 +86,43 @@ The primary interface to Kaya is its API. The API allows users to authenticate t
 
 ---
 
+## Architecture
+
+Kaya relies on fat models, service objects, and thin views. Where possible, JavaScript is kept to a minimum in favour of backend Ruby code.
+
+### Architecture Documentation
+
+* [`doc/arch/`](doc/arch/) contains Architectural Decision Records
+
+### Testing
+
+* only permit a few integration tests
+* only permit about 12 system tests across the entire repository
+* unit tests should test models heavily, controllers lightly, and views not at all
+
+### Logging
+
+**Always add appropriate logs during development.**
+
+**Log levels:**
+- `debug` - Debug: State transitions, method entry/exit, variable values
+- `info` - Info: Key milestones, user actions, important state changes
+- `warn` - Warn: Unexpected but recoverable situations
+- `error` - Error: Caught exceptions, failures (always include the exception)
+
+**Where to add logs:**
+- Effect handlers / side effect execution
+- Repository/storage classes: Log I/O operations and results
+- UI controllers: Log lifecycle events and user actions
+- Caught exceptions: Always include the exception object
+
+> **Tip**: Consider emoji prefixes (🟢 DEBUG, 🔵 INFO, 🟠 WARN, 🔴 ERROR) for quick visual scanning in development logs.
+
+---
+
 ## Design
+
+* [`doc/design/`](doc/design/) contains example icons, graphics, and design documentation for user interfaces and user experiences
 
 Visual design should follow the [GNOME brand guidelines](https://brand.gnome.org/) for typography and colors.
 

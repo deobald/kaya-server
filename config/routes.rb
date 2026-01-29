@@ -7,6 +7,11 @@ Rails.application.routes.draw do
         resources :anga, only: [ :index ], controller: "anga", as: "user_anga"
         get "anga/:filename", to: "anga#show", as: "user_anga_file", constraints: { filename: /[^\/]+/ }
         post "anga/:filename", to: "anga#create", constraints: { filename: /[^\/]+/ }
+
+        # Cache API for bookmark webpage caching
+        get "cache", to: "cache#index", as: "cache"
+        get "cache/:bookmark", to: "cache#show", as: "cache_bookmark", constraints: { bookmark: /[^\/]+/ }
+        get "cache/:bookmark/:filename", to: "cache#file", as: "cache_file", constraints: { bookmark: /[^\/]+/, filename: /[^\/]+/ }
       end
     end
   end
@@ -43,6 +48,8 @@ Rails.application.routes.draw do
     get "/", to: redirect("/app/everything")
     get "everything", to: "everything#index"
     get "anga/:id/preview", to: "anga#preview", as: "anga_preview"
+    get "anga/:id/cache_status", to: "anga#cache_status", as: "anga_cache_status"
+    get "anga/:id/cache/:filename", to: "anga#cache_file", as: "anga_cache_file", constraints: { filename: /[^\/]+/ }
     post "anga", to: "anga#create", as: "anga_create"
   end
 

@@ -1648,6 +1648,12 @@ img {
     height: 64px;
 }
 
+.bookmark-favicon {
+    width: 64px;
+    height: 64px;
+    object-fit: contain;
+}
+
 /* Image Tiles */
 .anga-tile-image {
     padding: 0;
@@ -1879,6 +1885,15 @@ img {
     border-radius: var(--radius-medium);
 }
 
+/* Cached Webpage Preview */
+.preview-cached-page {
+    width: 100%;
+    height: 70vh;
+    border: none;
+    border-radius: var(--radius-medium);
+    background: white;
+}
+
 /* Bookmark Preview */
 .preview-bookmark {
     display: flex;
@@ -1891,6 +1906,69 @@ img {
     font-size: var(--font-size-body);
     font-style: italic;
     margin: 0;
+}
+
+.preview-caching-status {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-3);
+    padding: var(--spacing-3);
+    background: var(--color-surface-alt);
+    border-radius: var(--radius-medium);
+}
+
+.preview-caching-status .preview-bookmark-notice {
+    font-style: normal;
+}
+
+.caching-spinner {
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--color-border);
+    border-top-color: var(--color-accent);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.preview-cache-error {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-1);
+    padding: var(--spacing-3);
+    background: var(--color-error-bg, #fef2f2);
+    border: 1px solid var(--color-error-border, #fecaca);
+    border-radius: var(--radius-medium);
+}
+
+:root[data-theme="dark"] .preview-cache-error {
+    background: #4a2020;
+    border-color: #7f1d1d;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .preview-cache-error {
+        background: #4a2020;
+        border-color: #7f1d1d;
+    }
+}
+
+.preview-cache-error .preview-bookmark-notice {
+    font-style: normal;
+    font-weight: var(--font-weight-medium);
+    color: var(--color-error, #dc2626);
+}
+
+.preview-error-details {
+    font-size: var(--font-size-caption);
+    color: var(--color-text-muted);
+    margin: 0;
+    word-break: break-word;
 }
 
 .preview-bookmark-content {
