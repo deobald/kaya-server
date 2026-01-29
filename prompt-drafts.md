@@ -55,3 +55,7 @@ When a tile is clicked but the webpage hasn't been cached yet, it says "Webpage 
 **Bug:** The "Caching webpage..." spinner never returns. Even if it's left to run for an hour, the webpage hasn't been cached, the spinner hasn't been replaced by the webpage content, and the favicon and webpage contents are not showing up in the Preview modal even after a page refresh.
 
 Write a system test (https://guides.rubyonrails.org/testing.html#system-testing) using Capybara to test the caching behaviour when a bookmark's Preview modal has been opened. The test should verify that the "Caching webpage..." spinner is replaced by the iframe once the webpage is downloaded and cached. Use https://www.postgresql.org/ as the sample domain/bookmark for the test.
+
+## Searching Bookmarks
+
+Now that bookmarks are downloaded as full webpages and successfully cached, add full-text search to BookmarkSearch as we had originally planned. It should search the text of the HTML document, similar to how PDFs are searched, but it does not need to load any of the other assets.
