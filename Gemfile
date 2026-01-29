@@ -89,5 +89,5 @@ group :test do
   gem "selenium-webdriver"
 
   # Pin minitest to 5.x until Rails is compatible with minitest 6.x
-  gem "minitest", "~> 5.0"
+  gem "minitest", "~> 6.0"
 end
