@@ -99,6 +99,7 @@ Kaya relies on fat models, service objects, and thin views. Where possible, Java
 * only permit a few integration tests
 * only permit about 12 system tests across the entire repository
 * unit tests should test models heavily, controllers lightly, and views not at all
+* when fixing bugs, always try to write a failing unit test first; keep the test
 
 ### Logging
 

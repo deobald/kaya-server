@@ -63,3 +63,7 @@ Now that bookmarks are downloaded as full webpages and successfully cached, add 
 ## Search Results
 
 Search results should be ordered by relevance in the UI, starting with the most relevant. At the moment, it seems they are ordered based on their regular ("everything") order, even when returned as search results.
+
+### BUG: Mid-filename text not found
+
+In development, I have a file/anga called `2026-01-28T205243-three-button-mooze.png`. However, when I search for "button", it isn't returned. Is this because of the string difference fuzzy search used? If so, swap out Jaro-Winkler for Levenshtein. If it's a bug in the Search models, fix that instead.

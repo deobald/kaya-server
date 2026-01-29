@@ -30,9 +30,9 @@ module Search
       else
         # For non-exact queries, only match filename if it's not a common pattern
         unless FileType.common_filename_pattern?(filename_base)
-          filename_score = jaro_winkler_score(query, filename_base)
-          if filename_score >= threshold
-            return SearchResult.new(match?: true, score: filename_score, matched_text: @anga.filename)
+          filename_result = find_best_match(query, filename_base, threshold)
+          if filename_result
+            return SearchResult.new(match?: true, score: filename_result.score, matched_text: @anga.filename)
           end
         end
       end
@@ -102,7 +102,8 @@ module Search
     end
 
     def tokenize(content)
-      content.downcase.scan(/[\w'-]+/)
+      # Split on non-word characters (including hyphens) to get individual words
+      content.downcase.split(/[^\w']+/).reject(&:blank?)
     end
 
     def extract_phrases(content, word_count)
