@@ -13,12 +13,20 @@ The Kaya Server allows users to create accounts, store, and search their notes a
 
 ---
 
+## Prompt History
+
+You can find significant past prompts in [PROMPTS.md](PROMPTS.md). Major prompts are titled with Subheading Level Two (\#\#), sub-prompts are titled with Subheading Level Three (\#\#\#).
+
+The current major prompt or bugfix will probably also be in this file, uncommitted.
+
+---
+
 ## Codebase Overview
 
 **Backend:**
 
 * Ruby 3.4.8 / Rails 8.1
-* PostgreSQL 17 (with pgcrypto, pg_trgm extensions)
+* PostgreSQL 17 (with pgcrypto, pg\_trgm extensions)
 
 **Frontend:**
 
