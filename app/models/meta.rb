@@ -17,6 +17,18 @@ class Meta < ApplicationRecord
   scope :orphaned, -> { where(orphan: true) }
   scope :linked, -> { where(orphan: false) }
 
+  # Extracts the anga filename from TOML content.
+  # Returns the filename string or nil if not found/invalid.
+  def self.extract_anga_filename(uploaded_file)
+    toml_content = uploaded_file.read
+    uploaded_file.rewind
+    parsed = TomlRB.parse(toml_content)
+    parsed.dig("anga", "filename")
+  rescue TomlRB::ParseError => e
+    Rails.logger.warn "🟠 WARN: Failed to parse meta TOML: #{e.message}"
+    nil
+  end
+
   private
 
   def generate_uuid

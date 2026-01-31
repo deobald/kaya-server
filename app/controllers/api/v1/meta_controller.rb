@@ -51,8 +51,7 @@ module Api
           return
         end
 
-        # Parse the TOML to extract anga_filename
-        anga_filename = extract_anga_filename(uploaded_file)
+        anga_filename = Meta.extract_anga_filename(uploaded_file)
         if anga_filename.nil?
           render plain: "Invalid TOML: must contain [anga] section with filename key",
                  status: :unprocessable_entity
@@ -105,19 +104,6 @@ module Api
             type: "application/toml",
             tempfile: tempfile
           )
-        end
-      end
-
-      def extract_anga_filename(uploaded_file)
-        content = uploaded_file.read
-        uploaded_file.rewind
-
-        # Simple TOML parsing for the anga.filename field
-        # Look for [anga] section followed by filename = "..."
-        if content =~ /\[anga\].*?filename\s*=\s*"([^"]+)"/m
-          $1
-        else
-          nil
         end
       end
     end
