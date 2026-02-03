@@ -22,6 +22,8 @@ This file will get large, over time, so only prioritize reading through it if yo
 
 ## Essential Commands
 
+* `sqlite3 --readonly ./storage/development.sqlite3` to query 'development' db
+* `sqlite3 --readonly ./storage/development_queue.sqlite3` to query 'development' ActiveJob queue
 * `rails s` to start the server
 * `rake test` to run unit tests
 * `rake` provides most other commands, as this is a standard Rails project
