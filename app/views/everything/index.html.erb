@@ -58,7 +58,7 @@
             <% end %>
           <% elsif file_type.image? %>
             <div class="anga-tile-content anga-tile-image">
-              <%= image_tag url_for(anga.file), alt: anga.filename %>
+              <%= image_tag app_anga_preview_path(anga), alt: anga.filename %>
             </div>
           <% elsif file_type.pdf? %>
             <div class="anga-tile-content anga-tile-pdf">
