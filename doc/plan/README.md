@@ -10,4 +10,4 @@ Before creating the plan, read these documents:
 * [@README.md](./README.md)
 * [@AGENTS.md](./AGENTS.md)
 * [doc/design/README.md](./doc/design/README.md)
-* [doc/arch/*.md](./doc/design/)
+* [doc/arch/*.md](./doc/arch/)
