@@ -1646,6 +1646,7 @@ img {
 .anga-tile-bookmark svg {
     width: 64px;
     height: 64px;
+    color: var(--color-primary);
 }
 
 .bookmark-favicon {
