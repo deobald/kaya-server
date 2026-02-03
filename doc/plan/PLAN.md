@@ -9,5 +9,5 @@ Before creating the plan, read these documents:
 
 * [@README.md](./README.md)
 * [@AGENTS.md](./AGENTS.md)
-* [doc/design/README.md](./doc/design/README.md)
+* [doc/design/DESIGN.md](./doc/design/DESIGN.md)
 * [doc/arch/*.md](./doc/arch/)

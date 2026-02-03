@@ -6,7 +6,7 @@ The Kaya Server allows users to create accounts, store, and search their notes a
 
 ## Planning
 
-Read [doc/plan/README.md](./doc/plan/README.md) and follow those instructions for creating a plan before any work is performed.
+Read [doc/plan/PLAN.md](./doc/plan/PLAN.md) and follow those instructions for creating a plan before any work is performed.
 
 ---
 
