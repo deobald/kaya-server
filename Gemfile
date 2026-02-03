@@ -82,6 +82,7 @@ group :development do
   gem "web-console"
   gem "rubocop-rails", require: false
   gem "rubocop-factory_bot", require: false
+  gem "annotaterb"
 end
 
 group :development, :test do

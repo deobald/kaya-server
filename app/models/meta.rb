@@ -1,3 +1,28 @@
+# == Schema Information
+#
+# Table name: metas
+# Database name: primary
+#
+#  id            :string(36)       not null, primary key
+#  anga_filename :string           not null
+#  filename      :string           not null
+#  orphan        :boolean          default(FALSE), not null
+#  created_at    :datetime         not null
+#  updated_at    :datetime         not null
+#  anga_id       :string(36)
+#  user_id       :string(36)       not null
+#
+# Indexes
+#
+#  index_metas_on_anga_id               (anga_id)
+#  index_metas_on_user_id               (user_id)
+#  index_metas_on_user_id_and_filename  (user_id,filename) UNIQUE
+#
+# Foreign Keys
+#
+#  anga_id  (anga_id => angas.id) ON DELETE => nullify
+#  user_id  (user_id => users.id)
+#
 class Meta < ApplicationRecord
   before_create :generate_uuid
   before_save :link_to_anga

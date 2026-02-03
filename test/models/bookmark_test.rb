@@ -1,3 +1,24 @@
+# == Schema Information
+#
+# Table name: bookmarks
+# Database name: primary
+#
+#  id          :string(36)       not null, primary key
+#  cache_error :text
+#  cached_at   :datetime
+#  url         :string
+#  created_at  :datetime         not null
+#  updated_at  :datetime         not null
+#  anga_id     :string(36)       not null
+#
+# Indexes
+#
+#  index_bookmarks_on_anga_id  (anga_id)
+#
+# Foreign Keys
+#
+#  anga_id  (anga_id => angas.id)
+#
 require "test_helper"
 
 class BookmarkTest < ActiveSupport::TestCase

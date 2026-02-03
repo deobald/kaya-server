@@ -1,3 +1,19 @@
+# == Schema Information
+#
+# Table name: users
+# Database name: primary
+#
+#  id                  :string(36)       not null, primary key
+#  email_address       :string           not null
+#  incidental_password :boolean          default(FALSE), not null
+#  password_digest     :string
+#  created_at          :datetime         not null
+#  updated_at          :datetime         not null
+#
+# Indexes
+#
+#  index_users_on_email_address  (email_address) UNIQUE
+#
 class User < ApplicationRecord
   # Generate UUID for new records
   before_create :generate_uuid

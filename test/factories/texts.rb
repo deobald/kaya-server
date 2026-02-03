@@ -1,3 +1,24 @@
+# == Schema Information
+#
+# Table name: texts
+# Database name: primary
+#
+#  id            :string(36)       not null, primary key
+#  extract_error :text
+#  extracted_at  :datetime
+#  source_type   :string           not null
+#  created_at    :datetime         not null
+#  updated_at    :datetime         not null
+#  anga_id       :string(36)       not null
+#
+# Indexes
+#
+#  index_texts_on_anga_id  (anga_id) UNIQUE
+#
+# Foreign Keys
+#
+#  anga_id  (anga_id => angas.id)
+#
 FactoryBot.define do
   factory :text do
     anga

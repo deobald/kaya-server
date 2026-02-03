@@ -1,3 +1,23 @@
+# == Schema Information
+#
+# Table name: angas
+# Database name: primary
+#
+#  id         :string(36)       not null, primary key
+#  filename   :string           not null
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#  user_id    :string(36)       not null
+#
+# Indexes
+#
+#  index_angas_on_user_id               (user_id)
+#  index_angas_on_user_id_and_filename  (user_id,filename) UNIQUE
+#
+# Foreign Keys
+#
+#  user_id  (user_id => users.id)
+#
 require "test_helper"
 
 class AngaTest < ActiveSupport::TestCase
