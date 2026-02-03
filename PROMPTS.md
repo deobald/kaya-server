@@ -110,3 +110,19 @@ All of the above UI should follow the GNOME HIG and GNOME brand guidelines, as p
 ### Preview: Clean up bookmarks
 
 Bookmark tiles in the Everything view should list the original URL, rather than the `*-bookmark.url` filename. The Preview window should also put the original URL in the titlebar, instead of the `*-bookmark.url` filename. (This is true of any `.url` file/Anga, not just those with `-bookmark` suffixes.) When a new bookmark Anga is created, either manually or by syncing, it should download and cache the website for that bookmark. Do this in an ActiveJob background job.
+
+## Full Text Search: Bookmarks and PDFs
+
+Use the architecture decision in [@adr-0005-full-text-search.md](./doc/arch/adr-0005-full-text-search.md) as the foundation for this task.
+
+**Bookmarks:**
+
+When a bookmark is created, `CacheBookmarkJob` will use `WebpageCacheService` to download a cached copy of that bookmark's webpage. At the end of `CacheBookmarkJob#perform`, it should enqueue `ExtractPlaintextBookmarkJob` which will use `ruby-readability` and `reverse_markdown` gems to extract the plaintext and store it in a Markdown file attached to a `Text` model which is in turn linked to the `Anga` model that was created for the bookmark.
+
+`BookmarkSearch` should search the extracted Markdown file attached to the `Text` model to find associated bookmarks, instead of searching HTML content.
+
+**PDFs:**
+
+When a PDF is added to Kaya, enqueue `ExtractPlaintextPdfJob` which will use `pdf-reader` gem to extract the plaintext and store it in a `.txt` file attached to a `Text` model which is in turn linked to the `Anga` model that was created for the PDF.
+
+`PdfSearch` should search the extracted Markdown file attached to the `Text` model to find associated PDFs, instead of parsing the PDF during the search operation.

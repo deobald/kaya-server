@@ -4,20 +4,28 @@ This document provides guidance for AI assistants working on the Kaya Server cod
 
 The Kaya Server allows users to create accounts, store, and search their notes and bookmarks. Although Kaya Server allows users to store notes and bookmarks, users' primary method of interaction is using browser plugins, mobile apps, and desktop apps.
 
-### Essential Commands
+## Planning
 
-* `rails s` to start the server
-* `rake test` to run unit tests
-* `rake` provides most other commands, as this is a standard Rails project
-* `ngrok http 80` for reverse proxy (mostly not needed)
+Read [doc/plan/README.md](./doc/plan/README.md) and follow those instructions for creating a plan before any work is performed.
 
 ---
 
 ## Prompt History
 
-You can find significant past prompts in [PROMPTS.md](PROMPTS.md). Major prompts are titled with Subheading Level Two (\#\#), sub-prompts are titled with Subheading Level Three (\#\#\#).
+You can find a chronological list of significant past prompts in [PROMPTS.md](PROMPTS.md). Major prompts are titled with Subheading Level Two (\#\#), sub-prompts are titled with Subheading Level Three (\#\#\#).
 
 The current major prompt or bugfix will probably also be in this file, uncommitted.
+
+This file will get large, over time, so only prioritize reading through it if you require additional context.
+
+---
+
+## Essential Commands
+
+* `rails s` to start the server
+* `rake test` to run unit tests
+* `rake` provides most other commands, as this is a standard Rails project
+* `ngrok http 80` for reverse proxy (mostly not needed)
 
 ---
 

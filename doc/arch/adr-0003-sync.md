@@ -18,6 +18,9 @@ Files from clients sync to the server symmetrically. Index routes simply list th
 * `~/.kaya/anga/{filename}` <=> `/api/v1/:user_email/anga/:filename`
 * `~/.kaya/meta/` <=> `/api/v1/:user_email/meta`
 * `~/.kaya/meta/{tomlfile}` <=> `/api/v1/:user_email/meta/:tomlfile`
+* `~/.kaya/text/` <=> `/api/v1/:user_email/text`
+* `~/.kaya/text/{anga}` <=> `/api/v1/:user_email/text/:anga`
+* `~/.kaya/text/{anga}/{filename}` <=> `/api/v1/:user_email/text/:anga/:filename`
 * `~/.kaya/cache/` <=> `/api/v1/:user_email/cache`
 * `~/.kaya/cache/{bookmark}` <=> `/api/v1/:user_email/cache/:bookmark`
 * `~/.kaya/cache/{bookmark}/{filename}` <=> `/api/v1/:user_email/cache/:bookmark/:filename`

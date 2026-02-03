@@ -14,7 +14,7 @@ module Search
         tempfile.rewind
 
         reader = PDF::Reader.new(tempfile.path)
-        text = reader.pages.map(&:text).join(" ")
+        text = reader.pages.map(&:text).join("\n\n")
         text.presence
       rescue StandardError
         nil
