@@ -118,7 +118,7 @@ class KayaSync
   end
 
   def fetch_server_anga_files
-    uri = URI("#{@base_url}/api/v1/#{URI.encode_www_form_component(@email)}/anga")
+    uri = URI("#{@base_url}/api/v1/#{@email}/anga")
 
     response = make_request(:get, uri)
 
@@ -145,7 +145,7 @@ class KayaSync
   end
 
   def download_anga_file(filename)
-    uri = URI("#{@base_url}/api/v1/#{URI.encode_www_form_component(@email)}/anga/#{URI.encode_www_form_component(filename)}")
+    uri = URI("#{@base_url}/api/v1/#{@email}/anga/#{filename}")
 
     response = make_request(:get, uri)
 
@@ -162,13 +162,18 @@ class KayaSync
 
   def upload_anga_files(files)
     files.each do |filename|
+      unless filename_url_safe?(filename)
+        log_error "[ANGA REJECTED] #{filename} contains invalid characters for URL (space, quotes, etc.)"
+        @stats[:anga][:errors] << { file: filename, operation: :upload, error: "Filename contains URL-illegal characters" }
+        next
+      end
       upload_anga_file(filename)
     end
   end
 
   def upload_anga_file(filename)
     local_path = File.join(ANGA_DIR, filename)
-    uri = URI("#{@base_url}/api/v1/#{URI.encode_www_form_component(@email)}/anga/#{URI.encode_www_form_component(filename)}")
+    uri = URI("#{@base_url}/api/v1/#{@email}/anga/#{filename}")
 
     file_content = File.binread(local_path)
     content_type = mime_type_for(filename)
@@ -214,7 +219,7 @@ class KayaSync
   end
 
   def fetch_server_meta_files
-    uri = URI("#{@base_url}/api/v1/#{URI.encode_www_form_component(@email)}/meta")
+    uri = URI("#{@base_url}/api/v1/#{@email}/meta")
 
     response = make_request(:get, uri)
 
@@ -242,7 +247,7 @@ class KayaSync
   end
 
   def download_meta_file(filename)
-    uri = URI("#{@base_url}/api/v1/#{URI.encode_www_form_component(@email)}/meta/#{URI.encode_www_form_component(filename)}")
+    uri = URI("#{@base_url}/api/v1/#{@email}/meta/#{filename}")
 
     response = make_request(:get, uri)
 
@@ -259,13 +264,18 @@ class KayaSync
 
   def upload_meta_files(files)
     files.each do |filename|
+      unless filename_url_safe?(filename)
+        log_error "[META REJECTED] #{filename} contains invalid characters for URL (space, quotes, etc.)"
+        @stats[:meta][:errors] << { file: filename, operation: :upload, error: "Filename contains URL-illegal characters" }
+        next
+      end
       upload_meta_file(filename)
     end
   end
 
   def upload_meta_file(filename)
     local_path = File.join(META_DIR, filename)
-    uri = URI("#{@base_url}/api/v1/#{URI.encode_www_form_component(@email)}/meta/#{URI.encode_www_form_component(filename)}")
+    uri = URI("#{@base_url}/api/v1/#{@email}/meta/#{filename}")
 
     file_content = File.binread(local_path)
     content_type = "application/toml"
@@ -315,7 +325,7 @@ class KayaSync
   end
 
   def fetch_server_words
-    uri = URI("#{@base_url}/api/v1/#{URI.encode_www_form_component(@email)}/words")
+    uri = URI("#{@base_url}/api/v1/#{@email}/words")
 
     response = make_request(:get, uri)
 
@@ -336,7 +346,7 @@ class KayaSync
   end
 
   def fetch_word_files(anga)
-    uri = URI("#{@base_url}/api/v1/#{URI.encode_www_form_component(@email)}/words/#{URI.encode_www_form_component(anga)}")
+    uri = URI("#{@base_url}/api/v1/#{@email}/words/#{anga}")
 
     response = make_request(:get, uri)
 
@@ -386,7 +396,7 @@ class KayaSync
   end
 
   def download_word_file(anga, filename)
-    uri = URI("#{@base_url}/api/v1/#{URI.encode_www_form_component(@email)}/words/#{URI.encode_www_form_component(anga)}/#{URI.encode_www_form_component(filename)}")
+    uri = URI("#{@base_url}/api/v1/#{@email}/words/#{anga}/#{filename}")
 
     response = make_request(:get, uri)
 
@@ -462,6 +472,11 @@ class KayaSync
     when ".html", ".htm" then "text/html"
     else "application/octet-stream"
     end
+  end
+
+def filename_url_safe?(filename)
+    illegal_chars = /[\s"#$%?<>\\{}|^\[\]`]/
+    illegal_chars !~ filename
   end
 
   def log(message)
