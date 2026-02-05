@@ -11,3 +11,8 @@ bin/rails assets:clean
 # database migrations like this one from the build command
 # to the pre-deploy command:
 bin/rails db:migrate
+
+# Load Solid gem schemas (cache, queue, cable) into the shared database
+bin/rails db:schema:load:cache || true
+bin/rails db:schema:load:queue || true
+bin/rails db:schema:load:cable || true
