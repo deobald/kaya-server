@@ -2,109 +2,90 @@
 
 ## Context
 
-Kaya Server needs a `docker-compose.yml` for deployment as a Portainer "Stack" on a single VPS. Kamal remains the Rails-native deployment tool; the compose file complements it for Portainer-managed infrastructure. A Caddy reverse proxy handles TLS termination externally (not managed by this compose file). The domain is `savebutton.org`.
+Kaya Server needed a `docker-compose.yml` for deployment as a Portainer "Stack" on a single VPS. TLS termination is handled externally (e.g. Caddy, nginx, or similar -- not managed by this compose file).
 
-Production uses the "free tier" database config: all four Rails databases (primary, cache, queue, cable) share a single `DATABASE_URL`, differing only in migration paths. This is a common Rails 8 setup that avoids the complexity of managing multiple databases on a single Postgres instance.
+A secondary goal was to fix the Dockerfile, which still referenced SQLite despite the project having migrated to PostgreSQL.
 
-## Changes
+## Summary of Changes
 
-### 1. Fix Dockerfile: Replace SQLite with PostgreSQL client libraries
+### 1. Dockerfile: Replace SQLite with PostgreSQL client libraries
 
-The existing `Dockerfile` installs `sqlite3` in the base image, but Kaya uses PostgreSQL.
+The Rails-generated `Dockerfile` included `sqlite3` but Kaya uses PostgreSQL.
 
 **File:** `Dockerfile`
 
-- Base stage: replace `sqlite3` with `libpq5` in the `apt-get install` line
-- Build stage: add `libpq-dev` to the `apt-get install` line
+- Base stage: replaced `sqlite3` with `libpq5` (PostgreSQL runtime client library)
+- Build stage: added `libpq-dev` (headers for compiling the `pg` gem)
 
-### 2. Update `config/deploy.yml`: Configure Kamal with PostgreSQL accessory
+### 2. Docker Compose for Portainer
 
-Update the Kamal deploy config to:
-- Add a PostgreSQL 17 accessory with an init script that enables `pgcrypto` and `pg_trgm` extensions
-- Add `DATABASE_URL` to the clear environment
-- Add `POSTGRES_PASSWORD` as a secret
-- Configure the proxy for `savebutton.org`
+**File:** `docker-compose.yml` (new)
 
-**File:** `config/deploy.yml`
+A Portainer-compatible stack with two services:
+- `db`: PostgreSQL 17 with named volume, init scripts, healthcheck, port bound to `127.0.0.1:5432`
+- `web`: pulls `deobald/kaya_server:latest` from Docker Hub, depends on healthy `db`, exposes port 80 on `127.0.0.1:3000`
 
-### 3. Update `.kamal/secrets`: Add database secrets
+**File:** `docker-compose.override.yml` (new)
 
-Add `POSTGRES_PASSWORD` to the secrets file.
+Local override that adds `build: .` to the `web` service, so `docker compose up --build` builds locally. Docker Compose merges this automatically. Portainer ignores it unless explicitly added.
 
-**File:** `.kamal/secrets`
+### 3. Database initialization scripts
 
-### 4. Create `docker-compose.yml`
+**File:** `db/production.sql` (new)
 
-A Portainer-compatible compose file that mirrors the Kamal setup.
+Creates all four production databases:
+- `kaya_production`, `kaya_production_cache`, `kaya_production_queue`, `kaya_production_cable`
 
-**File:** `docker-compose.yml` (new file, project root)
+**File:** `docker/02-setup-extensions.sh` (new)
 
-#### Services
+Enables PostgreSQL extensions after the databases are created:
+- `pgcrypto` on all four databases (required for UUID primary keys)
+- `pg_trgm` on `kaya_production` only (for future full-text search, ref: ADR 0005)
 
-**`db` (PostgreSQL 17)**
-- Image: `postgres:17`
-- Named volume `kaya_pg_data` mounted at `/var/lib/postgresql/data`
-- Environment: `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB=kaya_production`
-- Healthcheck using `pg_isready`
-- Init script to enable `pgcrypto` and `pg_trgm` extensions
-- Only listens on `127.0.0.1:5432` (not exposed to the internet)
+Files are numbered (`01-`, `02-`) to ensure correct execution order in `/docker-entrypoint-initdb.d/`.
 
-**`web` (Kaya Server)**
-- Builds from the local `Dockerfile`
-- Depends on `db` (healthy)
-- Environment variables:
-  - `RAILS_ENV=production`
-  - `RAILS_MASTER_KEY` (from `.env` or Portainer stack env)
-  - `DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/kaya_production`
-  - `SOLID_QUEUE_IN_PUMA=true`
-  - `RAILS_LOG_LEVEL=info`
-- Named volume `kaya_storage` at `/rails/storage` (ActiveStorage files)
-- Exposes port 80 on host `127.0.0.1:3000` (Caddy proxies to `localhost:3000`)
+### 4. Docker entrypoint fix
 
-#### Volumes
+**File:** `bin/docker-entrypoint`
 
-- `kaya_pg_data` -- PostgreSQL data
-- `kaya_storage` -- ActiveStorage (user uploads)
+- Changed `db:prepare` to `db:prepare:all` so that all four databases (primary, cache, queue, cable) are created and migrated on boot, not just `primary`
 
-### 5. Create `docker/init-db.sh`
+### 5. Supporting files
 
-**File:** `docker/init-db.sh` (new file)
+**File:** `.env.example` (new)
 
-A Postgres entrypoint script (mounted into `/docker-entrypoint-initdb.d/`) that enables `pgcrypto` and `pg_trgm` extensions on the `kaya_production` database. Used by both the docker-compose setup and the Kamal accessory.
+Documents required environment variables: `RAILS_MASTER_KEY`, `POSTGRES_USER`, `POSTGRES_PASSWORD`.
 
-### 6. Create `.env.example` for Portainer reference
+**File:** `.dockerignore`
 
-**File:** `.env.example` (new file, project root)
-
-Documents the environment variables that need to be set:
-
-```
-RAILS_MASTER_KEY=<from config/master.key>
-POSTGRES_USER=kaya
-POSTGRES_PASSWORD=<generate a strong password>
-```
-
-### 7. Update `.dockerignore`
-
-Add `docker-compose.yml` and `docker/` to `.dockerignore` since they're not needed inside the container image.
+- Updated stale SQLite comment
+- Added `docker-compose*.yml` and `docker/` to exclusions
 
 ## Files Changed
 
 | File | Action |
 |------|--------|
-| `Dockerfile` | Edit (sqlite3 -> libpq5/libpq-dev) |
-| `config/deploy.yml` | Edit (add PG accessory, DATABASE_URL, proxy) |
-| `.kamal/secrets` | Edit (add POSTGRES_PASSWORD) |
+| `Dockerfile` | Edit |
+| `bin/docker-entrypoint` | Edit |
+| `.dockerignore` | Edit |
+| `db/production.sql` | Create |
+| `docker/02-setup-extensions.sh` | Create |
 | `docker-compose.yml` | Create |
-| `docker/init-db.sh` | Create |
+| `docker-compose.override.yml` | Create |
 | `.env.example` | Create |
-| `.dockerignore` | Edit (add docker-compose, docker/) |
 
-## Not in Scope
+## Deployment Commands
 
-- Caddy configuration (managed externally)
-- SSL/TLS termination
-- Docker Swarm / multi-node deployment
-- CI/CD pipeline
-- Backups strategy
-- Changes to `config/database.yml` (free tier config is already correct)
+```bash
+# Build and push image to Docker Hub:
+docker build -t deobald/kaya_server:latest .
+docker push deobald/kaya_server:latest
+
+# Local build + run (uses docker-compose.override.yml automatically):
+docker compose up --build
+```
+
+## Prerequisites
+
+- A reverse proxy (e.g. Caddy) in front for TLS termination
+- Environment variables set in Portainer or `.env`: `RAILS_MASTER_KEY`, `POSTGRES_USER`, `POSTGRES_PASSWORD`

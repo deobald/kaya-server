@@ -19,7 +19,8 @@
       "mcp__render__list_deploys",
       "WebFetch(domain:raw.githubusercontent.com)",
       "WebFetch(domain:discuss.rubyonrails.org)",
-      "WebFetch(domain:guides.rubyonrails.org)"
+      "WebFetch(domain:guides.rubyonrails.org)",
+      "WebFetch(domain:www.ivanturkovic.com)"
     ]
   }
 }

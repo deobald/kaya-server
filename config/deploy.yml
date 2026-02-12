@@ -7,15 +7,16 @@ image: deobald/kaya_server
 # Deploy to these servers.
 servers:
   web:
-    - 192.168.0.1
+    - 46.225.121.36
   # job:
   #   hosts:
-  #     - 192.168.0.1
+  #     - 46.225.121.36
   #   cmd: bin/jobs
 
-# Caddy handles TLS termination externally.
+# Kamal proxy handles TLS via Let's Encrypt.
 proxy:
-  host: savebutton.org
+  ssl: true
+  host: savebutton.com
   app_port: 80
 
 # Where you keep your container images. (Docker Hub, by default)
@@ -34,8 +35,8 @@ env:
     # When you start using multiple servers, you should split out job processing to a dedicated machine.
     SOLID_QUEUE_IN_PUMA: true
 
-    # Database connection (references the kaya_server-db accessory on the Kamal docker network).
-    DATABASE_URL: postgres://kaya:${POSTGRES_PASSWORD}@kaya_server-db:5432/kaya_production
+    # Database host (references the kaya_server-db accessory on the Kamal docker network).
+    DB_HOST: kaya_server-db
 
     # Set number of processes dedicated to Solid Queue (default: 1)
     # JOB_CONCURRENCY: 3
@@ -44,7 +45,7 @@ env:
     # WEB_CONCURRENCY: 2
 
     # Log everything from Rails
-    # RAILS_LOG_LEVEL: debug
+    RAILS_LOG_LEVEL: debug
 
 # Aliases are triggered with "bin/kamal <alias>". You can overwrite arguments on invocation:
 # "bin/kamal logs -r job" will tail logs from the first server in the job section.
@@ -86,15 +87,15 @@ builder:
 accessories:
   db:
     image: postgres:17
-    host: 192.168.0.1
+    host: 46.225.121.36
     port: "127.0.0.1:5432:5432"
     env:
       clear:
         POSTGRES_USER: kaya
-        POSTGRES_DB: kaya_production
       secret:
         - POSTGRES_PASSWORD
     files:
-      - docker/init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
+      - db/production.sql:/docker-entrypoint-initdb.d/01-production.sql
+      - docker/02-setup-extensions.sh:/docker-entrypoint-initdb.d/02-setup-extensions.sh
     directories:
       - data:/var/lib/postgresql/data
