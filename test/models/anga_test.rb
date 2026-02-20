@@ -125,4 +125,81 @@ class AngaTest < ActiveSupport::TestCase
     anga.save!
     assert_nil anga.bookmark
   end
+
+  # --- Filename encoding ---
+
+  test "filename with spaces is URL-encoded on save" do
+    user = create(:user)
+    anga = user.angas.new(filename: "2025-06-28T120000-note with spaces.md")
+    anga.file.attach(
+      io: StringIO.new("# Note"),
+      filename: "2025-06-28T120000-note with spaces.md",
+      content_type: "text/markdown"
+    )
+    anga.save!
+
+    assert_equal "2025-06-28T120000-note%20with%20spaces.md", anga.filename
+  end
+
+  test "filename with unicode is URL-encoded on save" do
+    user = create(:user)
+    anga = user.angas.new(filename: "2025-06-28T120000-unicode-日本語.md")
+    anga.file.attach(
+      io: StringIO.new("# Note"),
+      filename: "2025-06-28T120000-unicode-日本語.md",
+      content_type: "text/markdown"
+    )
+    anga.save!
+
+    assert_equal "2025-06-28T120000-unicode-%E6%97%A5%E6%9C%AC%E8%AA%9E.md", anga.filename
+  end
+
+  test "already-encoded filename is not double-encoded" do
+    user = create(:user)
+    anga = user.angas.new(filename: "2025-06-28T120000-note%20with%20spaces.md")
+    anga.file.attach(
+      io: StringIO.new("# Note"),
+      filename: "2025-06-28T120000-note%20with%20spaces.md",
+      content_type: "text/markdown"
+    )
+    anga.save!
+
+    assert_equal "2025-06-28T120000-note%20with%20spaces.md", anga.filename
+  end
+
+  test "filename with commas is URL-encoded on save" do
+    user = create(:user)
+    anga = user.angas.new(filename: "2025-06-28T120000-one,two,three.md")
+    anga.file.attach(
+      io: StringIO.new("# Note"),
+      filename: "2025-06-28T120000-one,two,three.md",
+      content_type: "text/markdown"
+    )
+    anga.save!
+
+    assert_equal "2025-06-28T120000-one%2Ctwo%2Cthree.md", anga.filename
+  end
+
+  test "safe filename is unchanged after encoding" do
+    user = create(:user)
+    anga = user.angas.new(filename: "2025-06-28T120000-simple-note.md")
+    anga.file.attach(
+      io: StringIO.new("# Note"),
+      filename: "2025-06-28T120000-simple-note.md",
+      content_type: "text/markdown"
+    )
+    anga.save!
+
+    assert_equal "2025-06-28T120000-simple-note.md", anga.filename
+  end
+
+  test "filename_url_safe? returns true for safe filenames" do
+    assert Anga.filename_url_safe?("2025-06-28T120000-simple-note.md")
+    assert Anga.filename_url_safe?("2025-06-28T120000-note%20with%20spaces.md")
+  end
+
+  test "filename_url_safe? returns false for unsafe filenames" do
+    assert_not Anga.filename_url_safe?("2025-06-28T120000-note with spaces.md")
+    assert_not Anga.filename_url_safe?("2025-06-28T120000-日本語.md")
+  end
 end

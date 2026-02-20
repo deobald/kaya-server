@@ -50,7 +50,8 @@ export default class extends Controller {
     this.currentShareUrl = shareUrl;
 
     // For bookmarks, show the original URL in the title if available
-    this.titleTarget.textContent = originalUrl || filename;
+    // Decode filename for human-readable display (filenames are stored URL-encoded)
+    this.titleTarget.textContent = originalUrl || decodeURIComponent(filename);
 
     // Show/hide visit link for bookmarks
     if (originalUrl) {
@@ -63,7 +64,7 @@ export default class extends Controller {
     // Set up download link
     if (this.hasDownloadLinkTarget) {
       this.downloadLinkTarget.href = url;
-      this.downloadLinkTarget.download = filename;
+      this.downloadLinkTarget.download = decodeURIComponent(filename);
     }
 
     // Load content based on file type

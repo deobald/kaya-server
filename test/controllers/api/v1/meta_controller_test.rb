@@ -240,6 +240,59 @@ class Api::V1::MetaControllerTest < ActionDispatch::IntegrationTest
     file.unlink
   end
 
+  # --- Filename encoding tests ---
+
+  test "create should store URL-encoded filename in database" do
+    toml_content = <<~TOML
+      [anga]
+      filename = "2025-06-28T140000-my-bookmark.url"
+
+      [meta]
+      tags = ["test"]
+    TOML
+
+    file = Tempfile.new([ "2025-06-28T140000-meta with spaces", ".toml" ])
+    file.write(toml_content)
+    file.rewind
+
+    uploaded = Rack::Test::UploadedFile.new(file.path, "application/toml", false, original_filename: "2025-06-28T140000-meta with spaces.toml")
+
+    post "/api/v1/#{@user.email_address}/meta/2025-06-28T140000-meta%20with%20spaces.toml",
+         params: { file: uploaded },
+         headers: basic_auth_header(@user.email_address, "password")
+    assert_response :created
+
+    meta = @user.metas.find_by(filename: "2025-06-28T140000-meta%20with%20spaces.toml")
+    assert_not_nil meta
+    assert_equal "2025-06-28T140000-meta%20with%20spaces.toml", meta.filename
+
+    file.close
+    file.unlink
+  end
+
+  test "index should never return filenames containing spaces" do
+    # Insert a filename with spaces directly into the DB (bypassing model callbacks)
+    meta_id = SecureRandom.uuid
+    Meta.insert({
+      id: meta_id,
+      user_id: @user.id,
+      filename: "2025-06-28T120000-legacy spaces.toml",
+      anga_filename: "2025-06-28T120000-test.url",
+      orphan: true,
+      created_at: Time.current,
+      updated_at: Time.current
+    })
+
+    get api_v1_user_meta_index_url(user_email: @user.email_address),
+        headers: basic_auth_header(@user.email_address, "password")
+    assert_response :success
+
+    lines = response.body.strip.split("\n")
+
+    assert_includes lines, "2025-06-28T120000-legacy%20spaces.toml"
+    refute_includes lines, "2025-06-28T120000-legacy spaces.toml"
+  end
+
   private
 
   def basic_auth_header(email, password)

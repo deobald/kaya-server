@@ -24,6 +24,8 @@
 #  fk_rails_...  (user_id => users.id)
 #
 class Meta < ApplicationRecord
+  include FilenameEncoding
+
   before_save :link_to_anga
 
   belongs_to :user
@@ -57,8 +59,10 @@ class Meta < ApplicationRecord
 
   # Look up the associated Anga by the anga_filename and link them.
   # If the Anga cannot be found, mark this Meta as orphan.
+  # Encodes the anga_filename before lookup since anga filenames are stored URL-encoded.
   def link_to_anga
-    found_anga = user.angas.find_by(filename: anga_filename)
+    encoded_anga_filename = ERB::Util.url_encode(CGI.unescape(anga_filename))
+    found_anga = user.angas.find_by(filename: encoded_anga_filename)
 
     if found_anga
       self.anga = found_anga

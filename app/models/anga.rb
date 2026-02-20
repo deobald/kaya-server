@@ -19,6 +19,8 @@
 #  fk_rails_...  (user_id => users.id)
 #
 class Anga < ApplicationRecord
+  include FilenameEncoding
+
   after_create_commit :setup_bookmark, if: :bookmark_file?
   after_create_commit :setup_pdf_words, if: :pdf_file?
 

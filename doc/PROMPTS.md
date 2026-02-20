@@ -148,3 +148,11 @@ Follow the instructions in [@PLAN.md](file:///home/steven/work/deobald/kaya-serv
 Create a Docker compose file for this Rails service, for deployment to a Portainer instance. Add all the dependencies (Postgres and so on) as separate containers, such that the Docker compose file can be deployed as a "Stack" on Portainer.
 
 Follow the instructions in [@PLAN.md](file:///home/steven/work/deobald/kaya-server/doc/plan/PLAN.md).
+
+## BUG: API file listings should not contain spaces
+
+Follow the instructions in [@PLAN.md](file:///home/steven/work/deobald/kaya-server/doc/plan/PLAN.md).
+
+No matter what has been saved in Kaya Server, API file listings such as those for routes like `/api/v1/:user_email/anga` should never return URL-unfriendly characters, such as <space> (' '). Files uploaded to Kaya Server should always be URL-encoded when they are saved but on the off-chance an illegal character has made its way into the Kaya Server database, Kaya Server should never display this to client consumers of the API. Only users should ever see filenames with URL-illegal characters in them (comma, space, etc.), in the UI layer.
+
+Write tests to assert that both saving and serving (via API) of files adheres to this rule.

@@ -101,6 +101,53 @@ class MetaTest < ActiveSupport::TestCase
     assert_equal [ linked_meta ], @user.metas.linked.to_a
   end
 
+  # --- Filename encoding ---
+
+  test "meta filename with spaces is URL-encoded on save" do
+    meta = @user.metas.new(
+      filename: "2025-06-28T120000-meta with spaces.toml",
+      anga_filename: "2025-06-28T120000-test.url"
+    )
+    meta.file.attach(
+      io: StringIO.new("[anga]\nfilename = \"2025-06-28T120000-test.url\"\n"),
+      filename: "2025-06-28T120000-meta with spaces.toml",
+      content_type: "application/toml"
+    )
+    meta.save!
+
+    assert_equal "2025-06-28T120000-meta%20with%20spaces.toml", meta.filename
+  end
+
+  test "meta filename already encoded is not double-encoded" do
+    meta = @user.metas.new(
+      filename: "2025-06-28T120000-meta%20with%20spaces.toml",
+      anga_filename: "2025-06-28T120000-test.url"
+    )
+    meta.file.attach(
+      io: StringIO.new("[anga]\nfilename = \"2025-06-28T120000-test.url\"\n"),
+      filename: "2025-06-28T120000-meta%20with%20spaces.toml",
+      content_type: "application/toml"
+    )
+    meta.save!
+
+    assert_equal "2025-06-28T120000-meta%20with%20spaces.toml", meta.filename
+  end
+
+  test "safe meta filename is unchanged after encoding" do
+    meta = @user.metas.new(
+      filename: "2025-06-28T120000-simple-meta.toml",
+      anga_filename: "2025-06-28T120000-test.url"
+    )
+    meta.file.attach(
+      io: StringIO.new("[anga]\nfilename = \"2025-06-28T120000-test.url\"\n"),
+      filename: "2025-06-28T120000-simple-meta.toml",
+      content_type: "application/toml"
+    )
+    meta.save!
+
+    assert_equal "2025-06-28T120000-simple-meta.toml", meta.filename
+  end
+
   private
 
   def fixture_file_blob(content, filename)

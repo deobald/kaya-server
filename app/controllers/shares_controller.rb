@@ -3,7 +3,8 @@ class SharesController < ApplicationController
 
   def show
     @user = User.find(params[:user_id])
-    @anga = @user.angas.find_by!(filename: CGI.unescape(params[:filename]))
+    encoded_filename = ERB::Util.url_encode(CGI.unescape(params[:filename]))
+    @anga = @user.angas.find_by!(filename: encoded_filename)
 
     if @anga.file.attached?
       send_data @anga.file.download,

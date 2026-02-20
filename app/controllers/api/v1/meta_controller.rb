@@ -5,11 +5,12 @@ module Api
       before_action :set_meta, only: [ :show ]
 
       # GET /api/v1/:user_email/meta
-      # Returns a text/plain list of meta files (URL-escaped for direct use in URLs)
+      # Returns a text/plain list of meta files (URL-safe for direct use in URLs)
+      # Filenames are stored URL-encoded in the DB; safety net ensures no unencoded characters slip through
       def index
         filenames = current_user.metas.order(:filename).pluck(:filename)
-        escaped_filenames = filenames.map { |f| ERB::Util.url_encode(f) }
-        render plain: escaped_filenames.join("\n"), content_type: "text/plain"
+        safe_filenames = filenames.map { |f| Meta.ensure_url_safe(f) }
+        render plain: safe_filenames.join("\n"), content_type: "text/plain"
       end
 
       # GET /api/v1/:user_email/meta/:filename
@@ -29,6 +30,7 @@ module Api
       # Uploads a meta file
       def create
         url_filename = CGI.unescape(params[:filename])
+        encoded_filename = ERB::Util.url_encode(url_filename)
 
         # Validate filename from Content-Disposition matches URL filename
         uploaded_file = extract_uploaded_file
@@ -44,8 +46,8 @@ module Api
           return
         end
 
-        # Check for collision
-        if current_user.metas.exists?(filename: url_filename)
+        # Check for collision using encoded filename (as stored in DB)
+        if current_user.metas.exists?(filename: encoded_filename)
           render plain: "File already exists: #{url_filename}",
                  status: :conflict # 409
           return
@@ -82,7 +84,8 @@ module Api
       end
 
       def set_meta
-        @meta = current_user.metas.find_by!(filename: CGI.unescape(params[:filename]))
+        encoded_filename = ERB::Util.url_encode(CGI.unescape(params[:filename]))
+        @meta = current_user.metas.find_by!(filename: encoded_filename)
       rescue ActiveRecord::RecordNotFound
         head :not_found
       end

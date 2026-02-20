@@ -73,7 +73,7 @@
               <div class="file-extension"><%= file_type.extension_name.upcase %></div>
             </div>
           <% end %>
-          <div class="anga-tile-filename"><%= file_type.bookmark? && original_url.present? ? original_url : anga.filename %></div>
+          <div class="anga-tile-filename"><%= file_type.bookmark? && original_url.present? ? original_url : display_filename(anga.filename) %></div>
         </div>
       <% end %>
     </div>
