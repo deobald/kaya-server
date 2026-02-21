@@ -179,6 +179,6 @@ Proceed with Resend and add `raise_delivery_errors`, as you suggested.
 
 ### Tweaks:
 
-When the user fails to login, only clear the password field. Assume they typed their email correctly and leave the email field as-is.
+When the user fails to login, only clear the password field. Assume they typed their email correctly and leave the email field as-is. Since we assume the password was entered incorrectly, place the cursor in the now-empty password field after the failed login, not the email field.
 
 Change the expiry on the password reset link to 45 minutes, up from 15 minutes.
