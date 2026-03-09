@@ -281,3 +281,5 @@ The web app already has this functionality. A user can share an anga from its Pr
 The result of this POST request should return a JSON document which includes the public "share" URL which has just been exposed:
 
 * GET: `share/:user_id/anga/:filename`
+
+If you don't have any questions for planning, just go ahead and implement.

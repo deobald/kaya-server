@@ -18,6 +18,9 @@ Rails.application.routes.draw do
         get "words/:anga", to: "words#show", as: "words_anga", constraints: { anga: /[^\/]+/ }
         get "words/:anga/:filename", to: "words#file", as: "words_file", constraints: { anga: /[^\/]+/, filename: /[^\/]+/ }
 
+        # Share API for generating public share URLs
+        post "share/anga/:filename", to: "share#create", as: "share_anga_file", constraints: { filename: /[^\/]+/ }
+
         # Cache API for bookmark webpage caching
         get "cache", to: "cache#index", as: "cache"
         get "cache/:bookmark", to: "cache#show", as: "cache_bookmark", constraints: { bookmark: /[^\/]+/ }
