@@ -265,3 +265,19 @@ If either `*Filter` object matches, then `ruby-readability` can be used to extra
 If neither `*Filter` object matches, then the default option should be used: extract all (non-tag) text content from the HTML.
 
 There is already a failing test at `test/jobs/extract_plaintext_bookmark_job_test.rb` that can be used to verify this new behaviour. You can write additional tests using sample data from real websites.
+
+---
+
+## Add a "Share" API
+
+Read [@PLAN.md](file:///home/steven/work/deobald/kaya-server/doc/plan/PLAN.md).
+
+Mobile apps have Share Sheets on iOS and Android and thus don't require any special Share functionality from Kaya Server. However, desktop apps do not have Share Sheets and require that the server provide public URLs.
+
+The web app already has this functionality. A user can share an anga from its Preview screen. We need to expose the following authenticated API route for users so they can use this share functionality remotely:
+
+* POST: `/api/v1/:user_email/share/anga/:filename`
+
+The result of this POST request should return a JSON document which includes the public "share" URL which has just been exposed:
+
+* GET: `share/:user_id/anga/:filename`
